@@ -20,7 +20,41 @@
 }
 
 body {
-  background: var(--background);
+  background: #18191A;
+  min-height: 100vh;
+  /* Diagonal overlays */
+  background-image:
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.02) 0 20px, transparent 20px 40px),
+    repeating-linear-gradient(-135deg, rgba(255,255,255,0.02) 0 20px, transparent 20px 40px),
+    /* Dot pattern in top right */
+    radial-gradient(circle, rgba(255,255,255,0.08) 1.5px, transparent 1.5px),
+    linear-gradient(135deg, #232526 0%, #18191A 100%);
+  background-size:
+    100% 100%,
+    100% 100%,
+    20px 20px,
+    100% 100%;
+  background-position:
+    0 0,
+    0 0,
+    top right,
+    0 0;
+  background-repeat: no-repeat, no-repeat, repeat, no-repeat;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Dot pattern only in top right corner */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 220px;
+  height: 220px;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.12) 2px, transparent 2.5px);
+  background-size: 20px 20px;
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
 }

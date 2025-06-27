@@ -1,0 +1,127 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(USER)
+  tickets   Ticket[] @relation("CreatedTickets")
+  assignedTickets Ticket[] @relation("AssignedTickets")
+  announcements Announcement[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  USER
+  MAINTENANCE
+}
+
+enum MaintenanceFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  ANNUALLY
+  NEVER
+}
+
+model Facility {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  location  String?
+  tickets   Ticket[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  type                 String?
+  floorOrZone          String?
+  areaSqm              Float?
+  isCritical           Boolean              @default(false)
+  maintenanceFrequency MaintenanceFrequency @default(NEVER)
+  lastInspectionDate   DateTime?
+  nextPlannedPMDate    DateTime?
+  remarks              String?
+}
+
+model Ticket {
+  id                 String       @id @default(uuid())
+  title              String
+  description        String
+  purpose            String
+  requestOfMaterials String?
+  denialReason       String?
+  status             TicketStatus @default(OPEN)
+  priority           Priority     @default(MEDIUM)
+  
+  user               User         @relation("CreatedTickets", fields: [userId], references: [id])
+  userId             String
+  
+  assignedTo         User?        @relation("AssignedTickets", fields: [assignedToId], references: [id])
+  assignedToId       String?
+
+  facility           Facility     @relation(fields: [facilityId], references: [id])
+  facilityId         String
+  
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  scheduledDate      DateTime?
+  completionDate     DateTime?
+  
+  photos             String[]
+  progressLogs       Json[]
+
+  // Part 2 Fields
+  locationDetail          String?
+  impactLevel             ImpactLevel  @default(LOW)
+  requestedCompletionDate DateTime?
+  photoUrl                String?
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+  DENIED
+}
+
+enum ImpactLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model Announcement {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  String?
+}
