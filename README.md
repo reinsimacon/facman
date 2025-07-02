@@ -1,36 +1,68 @@
-This is a (Facility-Management-Sample) [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Facility Management System (FacMan)
 
-## Getting Started
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app), using Prisma, PostgreSQL, and Material UI. It is fully containerized and runs in Docker.
 
-First, run the development server:
+## Getting Started (Docker)
+
+### 1. Build and Run with Docker Compose
 
 ```bash
+docker-compose up --build
+```
+- This will start both the app (Next.js) and the database (PostgreSQL) in containers.
+- The app will be available at [http://localhost:3000](http://localhost:3000)
+
+### 2. Seed the Database (Initial Data)
+After the containers are running, seed the database with initial data (admin user, facilities, announcement):
+
+```bash
+docker-compose exec app npm run seed
+```
+- Default admin login: `admin@facman.com` / `admin123`
+
+### 3. Access Prisma Studio (Database GUI)
+To visually browse and edit your database:
+
+1. Make sure port 5555 is exposed in your `docker-compose.yml` under the `app` service:
+   ```yaml
+   ports:
+     - "3000:3000"
+     - "5555:5555"
+   ```
+2. Start Prisma Studio:
+   ```bash
+   docker-compose exec app npx prisma studio --hostname 0.0.0.0
+   ```
+3. Open [http://localhost:5555](http://localhost:5555) in your browser.
+
+---
+
+## Development (Non-Docker)
+If you want to run locally (not in Docker):
+
+```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
+- **Next.js** app in `/src`
+- **Prisma** schema in `/prisma/schema.prisma`
+- **Seed script** in `/prisma/seed.mjs`
+- **Docker** config in `Dockerfile` and `docker-compose.yml`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
 ## Learn More
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Prisma Documentation](https://www.prisma.io/docs/)
+- [Docker Documentation](https://docs.docker.com/)
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Notes
+- All data is stored in the Dockerized PostgreSQL database. If you restart containers, your data persists in the Docker volume (`db_data`).
+- To reset the database, you can remove the volume: `docker-compose down -v`
+- For any issues, check logs with `docker-compose logs app` or `docker-compose logs db`.

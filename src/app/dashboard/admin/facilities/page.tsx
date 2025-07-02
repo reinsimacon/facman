@@ -20,12 +20,24 @@ interface Facility {
   createdAt: string;
 }
 
+interface FacilityForm {
+  name: string;
+  location: string;
+  type: string;
+  floorOrZone: string;
+  areaSqm: string;
+  maintenanceFrequency: string;
+  lastInspectionDate?: string;
+  nextPlannedPMDate?: string;
+  remarks: string;
+}
+
 const facilityTypes = ['Office', 'Common Area', 'Bathroom', 'Elevator', 'Warehouse', 'Meeting Room', 'Kitchen'];
 const maintenanceFrequencies = ['DAILY', 'WEEKLY', 'MONTHLY', 'QUARTERLY', 'ANNUALLY', 'NEVER'];
 
 export default function AdminFacilitiesPage() {
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState<Partial<Facility>>({ name: '', location: '', type: '', floorOrZone: '', areaSqm: undefined, maintenanceFrequency: 'NEVER', remarks: '' });
+  const [form, setForm] = useState<FacilityForm>({ name: '', location: '', type: '', floorOrZone: '', areaSqm: '', maintenanceFrequency: 'NEVER', remarks: '' });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [facilities, setFacilities] = useState<Facility[]>([]);
@@ -47,16 +59,23 @@ export default function AdminFacilitiesPage() {
   useEffect(() => { fetchFacilities(); }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>) => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
   };
 
   const handleOpen = (facility: Facility | null = null) => {
     setEditFacility(facility);
     setForm(facility ? {
-      ...facility,
+      name: facility.name || '',
+      location: facility.location || '',
+      type: facility.type || '',
+      floorOrZone: facility.floorOrZone || '',
+      areaSqm: facility.areaSqm !== null && facility.areaSqm !== undefined ? String(facility.areaSqm) : '',
+      maintenanceFrequency: facility.maintenanceFrequency || 'NEVER',
       lastInspectionDate: facility.lastInspectionDate ? facility.lastInspectionDate.substring(0, 10) : undefined,
       nextPlannedPMDate: facility.nextPlannedPMDate ? facility.nextPlannedPMDate.substring(0, 10) : undefined,
-    } : { name: '', location: '', type: '', floorOrZone: '', areaSqm: undefined, maintenanceFrequency: 'NEVER', remarks: '' });
+      remarks: facility.remarks || '',
+    } : { name: '', location: '', type: '', floorOrZone: '', areaSqm: '', maintenanceFrequency: 'NEVER', remarks: '' });
     setError(null);
     setOpen(true);
   };
@@ -75,7 +94,7 @@ export default function AdminFacilitiesPage() {
     
     const { areaSqm, lastInspectionDate, nextPlannedPMDate, ...restOfForm } = form;
 
-    const processedArea = (areaSqm === '' || areaSqm == null) ? null : parseFloat(String(areaSqm));
+    const processedArea = areaSqm === '' ? null : parseFloat(areaSqm as string);
 
     if (processedArea !== null && isNaN(processedArea)) {
       setError('Area (sqm) must be a valid number.');
@@ -85,8 +104,8 @@ export default function AdminFacilitiesPage() {
     const body: Partial<Facility> = {
       ...restOfForm,
       areaSqm: processedArea,
-      lastInspectionDate: lastInspectionDate ? new Date(lastInspectionDate).toISOString() : null,
-      nextPlannedPMDate: nextPlannedPMDate ? new Date(nextPlannedPMDate).toISOString() : null,
+      lastInspectionDate: lastInspectionDate ? new Date(lastInspectionDate).toISOString() : undefined,
+      nextPlannedPMDate: nextPlannedPMDate ? new Date(nextPlannedPMDate).toISOString() : undefined,
     };
 
     try {
@@ -172,7 +191,7 @@ export default function AdminFacilitiesPage() {
               </Select>
             </FormControl>
             <TextField label="Floor / Zone" name="floorOrZone" value={form.floorOrZone || ''} onChange={handleChange} fullWidth margin="normal" />
-            <TextField label="Area (sqm) (optional)" name="areaSqm" type="number" value={form.areaSqm ?? ''} onChange={handleChange} fullWidth margin="normal" />
+            <TextField label="Area (sqm) (optional)" name="areaSqm" type="number" value={form.areaSqm || ''} onChange={handleChange} fullWidth margin="normal" />
             <FormControl fullWidth margin="normal">
               <InputLabel>Maintenance Frequency</InputLabel>
               <Select name="maintenanceFrequency" value={form.maintenanceFrequency || 'NEVER'} label="Maintenance Frequency" onChange={handleChange}>

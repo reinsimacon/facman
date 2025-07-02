@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { Typography, Box, Grid, Chip, Card, CardHeader, CardContent, Table, TableBody, TableCell, TableRow, TableHead, TableContainer } from '@mui/material';
+import { Typography, Box, Chip, Card, CardHeader, CardContent, Table, TableBody, TableCell, TableRow, TableHead, TableContainer } from '@mui/material';
 import { Business, Wc, Warehouse, Elevator, MeetingRoom, Kitchen, Public } from '@mui/icons-material';
 
 interface Ticket {
@@ -79,16 +79,16 @@ export default function FacilityProfilePage() {
         Facility Profile
       </Typography>
 
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <Box>
           <Card sx={{ p: 2, borderRadius: 2, boxShadow: 3 }}>
             <CardHeader
               title={facility.name}
               subheader={facility.location}
             />
             <CardContent>
-              <Grid container spacing={3}>
-                <Grid item xs={12} md={4}>
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
+                <Box sx={{ flex: 1 }}>
                   <Typography variant="h6" gutterBottom>Details</Typography>
                   <Box display="flex" alignItems="center" mb={1}>
                     <FacilityTypeIcon type={facility.type} />
@@ -100,27 +100,27 @@ export default function FacilityProfilePage() {
                     <Typography mr={1}><strong>Critical:</strong></Typography>
                     <Chip label={facility.isCritical ? 'Yes' : 'No'} color={facility.isCritical ? 'error' : 'default'} size="small" />
                   </Box>
-                </Grid>
-                <Grid item xs={12} md={4}>
+                </Box>
+                <Box sx={{ flex: 1 }}>
                   <Typography variant="h6" gutterBottom>Maintenance</Typography>
                   <Typography><strong>Frequency:</strong> {facility.maintenanceFrequency || '-'}</Typography>
                   <Typography><strong>Last Inspection:</strong> {facility.lastInspectionDate ? new Date(facility.lastInspectionDate).toLocaleDateString() : '-'}</Typography>
                   <Typography><strong>Next PM:</strong> {facility.nextPlannedPMDate ? new Date(facility.nextPlannedPMDate).toLocaleDateString() : '-'}</Typography>
-                </Grid>
-                <Grid item xs={12} md={4}>
+                </Box>
+                <Box sx={{ flex: 1 }}>
                   {facility.remarks && (
                     <>
                       <Typography variant="h6" gutterBottom>Remarks</Typography>
                       <Typography paragraph>{facility.remarks}</Typography>
                     </>
                   )}
-                </Grid>
-              </Grid>
+                </Box>
+              </Box>
             </CardContent>
           </Card>
-        </Grid>
+        </Box>
 
-        <Grid item xs={12}>
+        <Box>
           <Card sx={{ p: 2, borderRadius: 2, boxShadow: 3 }}>
             <CardHeader title="Open Tickets" />
             <CardContent>
@@ -135,7 +135,7 @@ export default function FacilityProfilePage() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {facility.tickets.map(ticket => (
+                      {facility.tickets.map((ticket: Ticket) => (
                         <TableRow key={ticket.id}>
                           <TableCell>{ticket.title}</TableCell>
                           <TableCell>{new Date(ticket.createdAt).toLocaleString()}</TableCell>
@@ -152,8 +152,8 @@ export default function FacilityProfilePage() {
               )}
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </Box>
   );
 } 
