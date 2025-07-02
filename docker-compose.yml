@@ -4,7 +4,7 @@ services:
     image: postgres:16
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Comfac@1234
+      POSTGRES_PASSWORD: desiredPass
       POSTGRES_DB: facman
     ports:
       - "5432:5432"
@@ -21,7 +21,7 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgresql://postgres:Comfac@1234@db:5432/facman
+      DATABASE_URL: postgresql://postgres:desiredPass@db:5432/facman
 
 volumes:
   db_data: 
