@@ -7,8 +7,8 @@ import { stat, mkdir } from 'fs/promises';
 async function ensureDirExists(dirPath: string) {
   try {
     await stat(dirPath);
-  } catch (e: any) {
-    if (e.code === 'ENOENT') {
+  } catch (e: unknown) {
+    if (e instanceof Error && 'code' in e && e.code === 'ENOENT') {
       await mkdir(dirPath, { recursive: true });
     } else {
       throw e;

@@ -109,7 +109,7 @@ export default function CreateTicketPage() {
         return;
       }
       
-      const body: { [key: string]: any } = { ...form, purpose: form.description };
+      const body: Record<string, string | undefined> = { ...form, purpose: form.description };
       if (!body.requestedCompletionDate) {
         delete body.requestedCompletionDate;
       }

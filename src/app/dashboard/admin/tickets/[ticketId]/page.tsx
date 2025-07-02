@@ -5,10 +5,28 @@ import {
   Box, Typography, Card, CardContent, Divider, Button, Chip, Avatar, Stack, CircularProgress
 } from "@mui/material";
 
+interface Ticket {
+  id: string;
+  title: string;
+  description: string;
+  status: string;
+  priority: string;
+  impactLevel: string;
+  createdAt: string;
+  requestedCompletionDate?: string;
+  locationDetail?: string;
+  purpose?: string;
+  photoUrl?: string;
+  documentUrl?: string;
+  user?: { name: string; email: string };
+  facility?: { name: string; location?: string };
+  assignedTo?: { name: string };
+}
+
 export default function AdminTicketDetailsPage() {
   const { ticketId } = useParams();
   const router = useRouter();
-  const [ticket, setTicket] = useState<any>(null);
+  const [ticket, setTicket] = useState<Ticket | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

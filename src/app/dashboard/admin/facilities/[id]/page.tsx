@@ -80,7 +80,7 @@ export default function FacilityProfilePage() {
       </Typography>
 
       <Grid container spacing={3}>
-        <Grid xs={12}>
+        <Grid item xs={12}>
           <Card sx={{ p: 2, borderRadius: 2, boxShadow: 3 }}>
             <CardHeader
               title={facility.name}
@@ -88,7 +88,7 @@ export default function FacilityProfilePage() {
             />
             <CardContent>
               <Grid container spacing={3}>
-                <Grid xs={12} md={4}>
+                <Grid item xs={12} md={4}>
                   <Typography variant="h6" gutterBottom>Details</Typography>
                   <Box display="flex" alignItems="center" mb={1}>
                     <FacilityTypeIcon type={facility.type} />
@@ -101,13 +101,13 @@ export default function FacilityProfilePage() {
                     <Chip label={facility.isCritical ? 'Yes' : 'No'} color={facility.isCritical ? 'error' : 'default'} size="small" />
                   </Box>
                 </Grid>
-                <Grid xs={12} md={4}>
+                <Grid item xs={12} md={4}>
                   <Typography variant="h6" gutterBottom>Maintenance</Typography>
                   <Typography><strong>Frequency:</strong> {facility.maintenanceFrequency || '-'}</Typography>
                   <Typography><strong>Last Inspection:</strong> {facility.lastInspectionDate ? new Date(facility.lastInspectionDate).toLocaleDateString() : '-'}</Typography>
                   <Typography><strong>Next PM:</strong> {facility.nextPlannedPMDate ? new Date(facility.nextPlannedPMDate).toLocaleDateString() : '-'}</Typography>
                 </Grid>
-                <Grid xs={12} md={4}>
+                <Grid item xs={12} md={4}>
                   {facility.remarks && (
                     <>
                       <Typography variant="h6" gutterBottom>Remarks</Typography>
@@ -120,7 +120,7 @@ export default function FacilityProfilePage() {
           </Card>
         </Grid>
 
-        <Grid xs={12}>
+        <Grid item xs={12}>
           <Card sx={{ p: 2, borderRadius: 2, boxShadow: 3 }}>
             <CardHeader title="Open Tickets" />
             <CardContent>

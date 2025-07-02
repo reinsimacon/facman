@@ -17,11 +17,15 @@ async function verifyAdmin(req: NextRequest) {
 }
 
 // GET a single facility by ID
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+    req: NextRequest, 
+    { params }: { params: Promise<{ id: string }> }
+) {
     if (!await verifyAdmin(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     try {
+        const { id } = await params;
         const facility = await prisma.facility.findUnique({
-            where: { id: params.id },
+            where: { id },
             include: { tickets: { where: { status: { not: 'CLOSED' } } } }
         });
         if (!facility) return NextResponse.json({ error: 'Facility not found' }, { status: 404 });
@@ -32,12 +36,16 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 // UPDATE a facility
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(
+    req: NextRequest, 
+    { params }: { params: Promise<{ id: string }> }
+) {
     if (!await verifyAdmin(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     try {
+        const { id } = await params;
         const data = await req.json();
         const updatedFacility = await prisma.facility.update({
-            where: { id: params.id },
+            where: { id },
             data,
         });
         return NextResponse.json(updatedFacility);
@@ -48,10 +56,14 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 // DELETE a facility
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+    req: NextRequest, 
+    { params }: { params: Promise<{ id: string }> }
+) {
     if (!await verifyAdmin(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     try {
-        await prisma.facility.delete({ where: { id: params.id } });
+        const { id } = await params;
+        await prisma.facility.delete({ where: { id } });
         return NextResponse.json({ success: true });
     } catch {
         return NextResponse.json({ error: 'Failed to delete facility' }, { status: 500 });

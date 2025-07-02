@@ -1,18 +1,29 @@
 "use client";
 import { Typography, Box, Button, Modal, TextField, Paper, List, ListItem, ListItemText } from '@mui/material';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+
+interface Announcement {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: string;
+}
 
 export default function AdminAnnouncementsPage() {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ title: '', content: '' });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [announcements, setAnnouncements] = useState<any[]>([]);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
-  const handleChange = (e: any) => setForm({ ...form, [e.target.name]: e.target.value });
+  
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => 
+    setForm({ ...form, [e.target.name]: e.target.value });
+  
   const handleOpen = () => setOpen(true);
   const handleClose = () => { setOpen(false); setError(null); setSuccess(null); setForm({ title: '', content: '' }); };
-  const handleSubmit = async (e: any) => {
+  
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null); setSuccess(null);
     try {
