@@ -13,6 +13,9 @@ docker-compose up --build
 - The app will be available at [http://localhost:3000](http://localhost:3000)
 
 ### 2. Seed the Database (Initial Data)
+seed script is located at:
+✅ prisma/seed.mjs
+
 After the containers are running, seed the database with initial data (admin user, facilities, announcement):
 
 ```bash
@@ -33,7 +36,14 @@ To visually browse and edit your database:
    ```bash
    docker-compose exec app npx prisma studio --hostname 0.0.0.0
    ```
-3. Open [http://localhost:5555](http://localhost:5555) in your browser.
+
+   Option: Run with nohup (best for persistent background)
+   ```bash
+   docker compose exec app nohup npx prisma studio &
+   ```
+   
+   
+4. Open [http://localhost:5555](http://localhost:5555) in your browser.
 
 ---
 
